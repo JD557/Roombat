@@ -124,10 +124,11 @@ class Roomba {
 }
 
 class GameState {
-  constructor(billy, roombas, marbles) {
+  constructor(billy, roombas, marbles, dirtyness) {
     this.billy = billy;
     this.roombas = roombas;
     this.marbles = marbles;
+    this.dirtyness = dirtyness;
   }
   spawnRoombas(n) {
     function randomRoomba() {
@@ -136,7 +137,7 @@ class GameState {
       else {return new Roomba(288, 64 + 16, Math.random() - 0.5, 1, true);}
     }
     const newRoombas = Array(n).fill(0).map(_ => randomRoomba());
-    return new GameState(this.billy, newRoombas, this.marbles);
+    return new GameState(this.billy, newRoombas, this.marbles, this.dirtyness);
   }
   nextTick(delta) {
     if (this.roombas.length == 0) {
@@ -166,7 +167,8 @@ class GameState {
             r.x < m.x+4 && r.x+32 > m.x+4 && r.y < m.y+4 && r.y+32 > m.y+4);
         return !collidedWithMarble;
       });
-      return new GameState(newBilly, filteredRoombas, filteredMarbles);
+      const newDirtyness = this.dirtyness - (filteredRoombas.length * delta);
+      return new GameState(newBilly, filteredRoombas, filteredMarbles, newDirtyness);
     }
   }
 }
@@ -176,7 +178,8 @@ var frameStart = null;
 const initialState = new GameState(
   new Player(128, 128, 0, 0, false),
   [],
-  []
+  [],
+  100
 );
 
 function main(gameState) {
@@ -190,6 +193,7 @@ function main(gameState) {
     renderRoomForeground(ctx);
     gameState.marbles.forEach(m => renderMarble(ctx, m.x, m.y));
     renderBilly(ctx, gameState.billy.x, gameState.billy.y, gameState.billy.getRot());
+    renderScore(ctx, gameState.dirtyness);
     requestAnimationFrame(main(gameState.nextTick(delta)));
   };
 };

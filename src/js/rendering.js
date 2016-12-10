@@ -33,3 +33,10 @@ function renderBilly(ctx, x, y, rot) {
 function renderMarble(ctx, x, y) {
   ctx.drawImage(marbleImg, x, y);
 }
+
+function renderScore(ctx, dirtyness) {
+  ctx.fillStyle = 'white';
+  ctx.font = '8px PressStart2P';
+
+  ctx.fillText('Dirtyness: ' + Math.ceil(dirtyness), 8, 16);
+}
