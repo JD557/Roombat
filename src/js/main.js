@@ -130,7 +130,12 @@ class GameState {
     this.marbles = marbles;
   }
   spawnRoombas(n) {
-    const newRoombas = Array(n).fill(0).map(_ => new Roomba(16, 256, 1, Math.random() - 0.5, true));
+    function randomRoomba() {
+      const door = Math.floor(Math.random() * 2);
+      if (door == 0) {return new Roomba(16, 256, 1, Math.random() - 0.5, true);}
+      else {return new Roomba(288, 64 + 16, Math.random() - 0.5, 1, true);}
+    }
+    const newRoombas = Array(n).fill(0).map(_ => randomRoomba());
     return new GameState(this.billy, newRoombas, this.marbles);
   }
   nextTick(delta) {
