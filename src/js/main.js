@@ -102,6 +102,8 @@ class Roomba {
     if (viewY < 64 || (viewY + 32) > 480) {
       newDirY = Math.random() * (-1 * Math.sign(this.dirY));
     }
+    if (newDirX == 0) {newDirX += 0.05;}
+    if (newDirY == 0) {newDirY += 0.05;}
     return new Roomba(this.x, this.y, newDirX, newDirY, true)
   }
   getRot() {
@@ -138,14 +140,20 @@ class GameState {
     else {
       const newBilly = this.billy.updateDirection().move(delta);
       const newRoombas = this.roombas.map(r => r.updateDirection().move(delta));
-      var newMarbles = this.marbles.map(m => m.move(delta));
+      let newMarbles = this.marbles.map(m => m.move(delta));
       if (shootMarble == true) {
         shootMarble = false;
-        marbleTimeout = 2;
+        marbleTimeout = 0.25;
         newMarbles.push(new Marble(this.billy.x, this.billy.y, this.billy.dirX, this.billy.dirY));
       }
       marbleTimeout -= delta;
-      return new GameState(newBilly, newRoombas, newMarbles);
+      const filteredMarbles = newMarbles.filter(function(m) {
+        const outOfBounds = m.x < 32 || m.x + 8 > 640 - 32 || m.y < 64 + 32 || m.y + 8 > 480 - 32;
+        const grid = inGrid(m.x + 4, m.y + 4);
+        const collidedWithEnv = invalidGrids.some(g => g[0] == grid[0] && g[1] == grid[1]);
+        return !outOfBounds && !collidedWithEnv;
+      });
+      return new GameState(newBilly, newRoombas, filteredMarbles);
     }
   }
 }
