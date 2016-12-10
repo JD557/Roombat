@@ -127,17 +127,26 @@ class GameState {
     this.roombas = roombas;
     this.marbles = marbles;
   }
+  spawnRoombas(n) {
+    const newRoombas = Array(n).fill(0).map(_ => new Roomba(16, 256, 1, Math.random() - 0.5, true));
+    return new GameState(this.billy, newRoombas, this.marbles);
+  }
   nextTick(delta) {
-    const newBilly = this.billy.updateDirection().move(delta);
-    const newRoombas = this.roombas.map(r => r.updateDirection().move(delta));
-    var newMarbles = this.marbles.map(m => m.move(delta));
-    if (shootMarble == true) {
-      shootMarble = false;
-      marbleTimeout = 2;
-      newMarbles.push(new Marble(this.billy.x, this.billy.y, this.billy.dirX, this.billy.dirY));
+    if (this.roombas.length == 0) {
+      return (this.spawnRoombas(3).nextTick(delta));
     }
-    marbleTimeout -= delta;
-    return new GameState(newBilly, newRoombas, newMarbles);
+    else {
+      const newBilly = this.billy.updateDirection().move(delta);
+      const newRoombas = this.roombas.map(r => r.updateDirection().move(delta));
+      var newMarbles = this.marbles.map(m => m.move(delta));
+      if (shootMarble == true) {
+        shootMarble = false;
+        marbleTimeout = 2;
+        newMarbles.push(new Marble(this.billy.x, this.billy.y, this.billy.dirX, this.billy.dirY));
+      }
+      marbleTimeout -= delta;
+      return new GameState(newBilly, newRoombas, newMarbles);
+    }
   }
 }
 
@@ -145,7 +154,7 @@ var frameStart = null;
 
 const initialState = new GameState(
   new Player(128, 128, 0, 0, false),
-  [new Roomba(16, 256, 1, 0.5, true), new Roomba(16, 256, 1, -0.5, true)],
+  [],
   []
 );
 
