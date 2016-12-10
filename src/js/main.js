@@ -12,7 +12,8 @@ function main(gameState) {
     frameStart = timestamp;
     renderRoom(ctx);
     rot += delta;
-    renderRoomba(ctx, 0, 0, rot);
+    renderRoomba(ctx, 32, 32, rot);
+    renderBilly(ctx, 128, 128, rot);
     requestAnimationFrame(main(gameState));
   };
 };

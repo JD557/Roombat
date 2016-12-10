@@ -19,5 +19,9 @@ function renderRoom(ctx) {
 }
 
 function renderRoomba(ctx, x, y, rot) {
-  drawRotated(ctx, 32, 32, rot, roombaImg);
+  drawRotated(ctx, x, y, rot, roombaImg);
+}
+
+function renderBilly(ctx, x, y, rot, frame, state) {
+  drawRotated(ctx, x, y, rot, billyImg);
 }
