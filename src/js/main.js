@@ -2,11 +2,14 @@ const ctx = get2dContext();
 
 const billySpeed = 128; // pixels per second
 const roombaSpeed = 128; // pixels per second
+function clamp(x, min, max) {
+  return Math.min(Math.max(x, min), max);
+}
 
 class Player {
   constructor(x, y, dirX, dirY, moving) {
-    this.x = x;
-    this.y = y;
+    this.x = clamp(x, 32, 640-64);
+    this.y = clamp(y, 64+32, 480-64);
     this.dirX = dirX;
     this.dirY = dirY;
     this.moving = moving;
