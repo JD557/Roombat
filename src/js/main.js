@@ -133,13 +133,25 @@ class Roomba {
   }
 }
 
+class GameDirector {
+  constructor(roombaTicks, snackTicks) {
+    this.roombaTicks = roombaTicks < 0 ? 10 : roombaTicks;
+    this.snackTicks = snackTicks < 0 ? 5 : snackTicks;
+    this.roombasToSpawn = roombaTicks < 0 ? 3 : 0;
+  }
+  update(delta) {
+    return new GameDirector(this.roombaTicks - delta, this.snackTicks - delta);
+  }
+}
+
 class GameState {
-  constructor(billy, roombas, marbles, snacks, dirtyness) {
+  constructor(billy, roombas, marbles, snacks, dirtyness, director) {
     this.billy = billy;
     this.roombas = roombas;
     this.marbles = marbles;
     this.snacks = snacks;
     this.dirtyness = dirtyness;
+    this.director = director;
   }
   spawnRoombas(n) {
     function randomRoomba() {
@@ -147,12 +159,13 @@ class GameState {
       if (door == 0) {return new Roomba(16, 256, 1, Math.random() - 0.5, true);}
       else {return new Roomba(288, 64 + 16, Math.random() - 0.5, 1, true);}
     }
-    const newRoombas = Array(n).fill(0).map(_ => randomRoomba());
-    return new GameState(this.billy, newRoombas, this.marbles, this.snacks, this.dirtyness);
+    const newRoombas = this.roombas.concat(Array(n).fill(0).map(_ => randomRoomba()));
+    const newDirector = new GameDirector(this.director.roombaTicks, this.director.snackTicks);
+    return new GameState(this.billy, newRoombas, this.marbles, this.snacks, this.dirtyness, newDirector);
   }
   nextTick(delta) {
-    if (this.roombas.length == 0) {
-      return (this.spawnRoombas(10).nextTick(delta));
+    if (this.director.roombasToSpawn > 0) {
+      return (this.spawnRoombas(this.director.roombasToSpawn).nextTick(delta));
     }
     else {
       const newBilly = this.billy.updateDirection().move(delta);
@@ -189,7 +202,8 @@ class GameState {
           (filteredRoombas.length * delta) +
           ((this.snacks.length - filteredSnacks.length) * snackRecharge)
         );
-      return new GameState(newBilly, filteredRoombas, filteredMarbles, filteredSnacks, newDirtyness);
+      const newDirector = this.director.update(delta);
+      return new GameState(newBilly, filteredRoombas, filteredMarbles, filteredSnacks, newDirtyness, newDirector);
     }
   }
 }
@@ -201,7 +215,8 @@ const initialState = new GameState(
   [],
   [],
   [new Snack(256, 256)],
-  100
+  100,
+  new GameDirector(-1, -1)
 );
 
 function main(gameState, menu) {
