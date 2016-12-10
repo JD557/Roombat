@@ -26,16 +26,18 @@ function renderRoomba(ctx, x, y, rot) {
   drawRotated(ctx, x, y, rot, roombaImg);
 }
 
-function renderBilly(ctx, x, y, rot) {
-  drawRotated(ctx, x, y, rot, billyImg);
+function renderBilly(ctx, x, y, rot, moving, anim) {
+  let extraRot = moving ? Math.cos(anim / 100.0) * 0.2 : 0;
+  drawRotated(ctx, x, y, rot + extraRot, billyImg);
 }
 
 function renderMarble(ctx, x, y) {
   ctx.drawImage(marbleImg, x, y);
 }
 
-function renderSnack(ctx, x, y, sprite) {
-  ctx.drawImage(snackImgs[sprite], x, y);
+function renderSnack(ctx, x, y, sprite, anim) {
+  let wave = Math.cos(anim / 500.0) * 4;
+  ctx.drawImage(snackImgs[sprite], x, y + wave);
 }
 
 function renderScore(ctx, dirtyness) {

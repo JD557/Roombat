@@ -219,9 +219,9 @@ function main(gameState, menu) {
         renderRoomBackground(ctx);
         gameState.roombas.forEach(r => renderRoomba(ctx, r.x, r.y, r.getRot()));
         renderRoomForeground(ctx);
-        gameState.snacks.forEach(s => renderSnack(ctx, s.x, s.y, s.sprite));
+        gameState.snacks.forEach(s => renderSnack(ctx, s.x, s.y, s.sprite, frameStart));
         gameState.marbles.forEach(m => renderMarble(ctx, m.x, m.y));
-        renderBilly(ctx, gameState.billy.x, gameState.billy.y, gameState.billy.getRot());
+        renderBilly(ctx, gameState.billy.x, gameState.billy.y, gameState.billy.getRot(), gameState.billy.moving, frameStart);
         renderScore(ctx, gameState.dirtyness);
         if (gameState.dirtyness > 0) {
           requestAnimationFrame(main(gameState.nextTick(delta), false));
