@@ -13,9 +13,13 @@ function drawRotated(ctx, x, y, rot, image) {
   ctx.restore();
 }
 
-function renderRoom(ctx) {
+function renderRoomBackground(ctx) {
   ctx.clearRect(0, 0, 640, 480);
   ctx.drawImage(roomImg, 0, 0);
+}
+
+function renderRoomForeground(ctx) {
+  ctx.drawImage(bedImg, 512, 288);
 }
 
 function renderRoomba(ctx, x, y, rot) {

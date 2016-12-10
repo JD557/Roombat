@@ -7,3 +7,4 @@ function loadImage(path) {
 var roomImg = loadImage('res/room.png');
 var roombaImg = loadImage('res/roomba.png');
 var billyImg = loadImage('res/billy.png');
+var bedImg = loadImage('res/bed.png');

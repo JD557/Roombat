@@ -2,6 +2,12 @@ const ctx = get2dContext();
 
 const billySpeed = 128; // pixels per second
 const roombaSpeed = 128; // pixels per second
+const invalidGrids = [
+  [16, 9], [17, 9], [18, 9], [16, 10], [17, 10], [18, 10] // bed
+];
+function inGrid(x, y) {
+  return [Math.floor(x/32), Math.floor(y/32)];
+}
 function clamp(x, min, max) {
   return Math.min(Math.max(x, min), max);
 }
@@ -13,6 +19,12 @@ class Player {
     this.dirX = dirX;
     this.dirY = dirY;
     this.moving = moving;
+    this.grids = [
+      inGrid(this.x, this.y),
+      inGrid(this.x + 31, this.y),
+      inGrid(this.x, this.y + 31),
+      inGrid(this.x + 31, this.y + 31)
+    ];
   }
   updateDirection() {
     var newDirX = 0;
@@ -40,7 +52,13 @@ class Player {
     else {
       const deltaX = this.dirX / vecSize * delta * billySpeed;
       const deltaY = this.dirY / vecSize * delta * billySpeed;
-      return new Player(this.x + deltaX, this.y + deltaY, this.dirX, this.dirY, this.moving);
+      const nextPlayer = new Player(this.x + deltaX, this.y + deltaY, this.dirX, this.dirY, this.moving);
+      if (nextPlayer.grids.some(g1 => invalidGrids.some(g2 => g1[0] == g2[0] && g1[1] == g2[1]))) {
+        return this;
+      }
+      else {
+        return nextPlayer;
+      }
     }
   }
 }
@@ -108,8 +126,9 @@ function main(gameState) {
     if (!frameStart) frameStart = timestamp;
     const delta = (timestamp - frameStart) / 1000.0;
     frameStart = timestamp;
-    renderRoom(ctx);
+    renderRoomBackground(ctx);
     gameState.roombas.forEach(r => renderRoomba(ctx, r.x, r.y, r.getRot()));
+    renderRoomForeground(ctx);
     renderBilly(ctx, gameState.billy.x, gameState.billy.y, gameState.billy.getRot());
     requestAnimationFrame(main(gameState.nextTick(delta)));
   };
