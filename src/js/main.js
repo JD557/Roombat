@@ -141,7 +141,7 @@ class GameState {
   }
   nextTick(delta) {
     if (this.roombas.length == 0) {
-      return (this.spawnRoombas(3).nextTick(delta));
+      return (this.spawnRoombas(10).nextTick(delta));
     }
     else {
       const newBilly = this.billy.updateDirection().move(delta);
@@ -176,26 +176,51 @@ class GameState {
 var frameStart = null;
 
 const initialState = new GameState(
-  new Player(128, 128, 0, 0, false),
+  new Player(128, 128, 0, 1, false),
   [],
   [],
   100
 );
 
-function main(gameState) {
+function main(gameState, menu) {
   return function(timestamp) {
     if (!timestamp) timestamp = 0;
     if (!frameStart) frameStart = timestamp;
     const delta = (timestamp - frameStart) / 1000.0;
     frameStart = timestamp;
-    renderRoomBackground(ctx);
-    gameState.roombas.forEach(r => renderRoomba(ctx, r.x, r.y, r.getRot()));
-    renderRoomForeground(ctx);
-    gameState.marbles.forEach(m => renderMarble(ctx, m.x, m.y));
-    renderBilly(ctx, gameState.billy.x, gameState.billy.y, gameState.billy.getRot());
-    renderScore(ctx, gameState.dirtyness);
-    requestAnimationFrame(main(gameState.nextTick(delta)));
+    if (menu) {
+      renderTitle(ctx);
+      marbleTimeout = -1;
+      if (shootMarble == true) {
+        shootMarble = false;
+        requestAnimationFrame(main(initialState, false));
+      }
+      else {
+        requestAnimationFrame(main(gameState, menu));
+      }
+    }
+    else {
+      if (delta > 0.5) {
+        console.log("Warning: Game is too slow, ignoring state change");
+        requestAnimationFrame(main(gameState, menu));
+      }
+      else {
+        renderRoomBackground(ctx);
+        gameState.roombas.forEach(r => renderRoomba(ctx, r.x, r.y, r.getRot()));
+        renderRoomForeground(ctx);
+        gameState.marbles.forEach(m => renderMarble(ctx, m.x, m.y));
+        renderBilly(ctx, gameState.billy.x, gameState.billy.y, gameState.billy.getRot());
+        renderScore(ctx, gameState.dirtyness);
+        if (gameState.dirtyness > 0) {
+          requestAnimationFrame(main(gameState.nextTick(delta), false));
+        }
+        else {
+          console.log("Game Over")
+          requestAnimationFrame(main(gameState.nextTick(delta), true));
+        }
+      }
+    }
   };
 };
 
-main(initialState)();
+main(initialState, true)();

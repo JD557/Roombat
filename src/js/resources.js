@@ -9,3 +9,4 @@ var roombaImg = loadImage('res/roomba.png');
 var billyImg = loadImage('res/billy.png');
 var bedImg = loadImage('res/bed.png');
 var marbleImg = loadImage('res/marble.png');
+var menuImg = loadImage('res/title.png');

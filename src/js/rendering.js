@@ -40,3 +40,35 @@ function renderScore(ctx, dirtyness) {
 
   ctx.fillText('Dirtyness: ' + Math.ceil(dirtyness), 8, 16);
 }
+
+
+function renderTitle(ctx) {
+  ctx.fillStyle = 'red';
+  ctx.font = '16px PressStart2P';
+
+  ctx.drawImage(menuImg, 0, 0);
+  ctx.fillText('Press Z to Start!', 320 - 130, 250);
+
+  ctx.font = '8px PressStart2P';
+
+  ctx.fillText('You are Billy, a young boy who ', 64, 300);
+  ctx.fillText('loves to play in his room, but ', 64, 310);
+  ctx.fillText('hates to clean it.             ', 64, 320);
+  ctx.fillText('After months of harsh          ', 64, 340);
+  ctx.fillText('negotiations the evil tyrant   ', 64, 350);
+  ctx.fillText('(mom) has lost her patience and', 64, 360);
+  ctx.fillText('decided to unleash an army of  ', 64, 370);
+  ctx.fillText('Roombas upon you.              ', 64, 380);
+  ctx.fillText('Do you have what it takes to   ', 64, 400);
+  ctx.fillText('fight off the invaders and keep', 64, 410);
+  ctx.fillText('your room dirty?               ', 64, 420);
+
+
+  ctx.fillText('How to play:              ', 360, 300);
+  ctx.fillText('Arrow keys: Move Billy    ', 360, 320);
+  ctx.fillText('Z: Shoot marble           ', 360, 330);
+  ctx.fillText('Eat snacks to keep your   ', 360, 350);
+  ctx.fillText('room dirty.               ', 360, 360);
+  ctx.fillText('If your dirtyness reaches ', 360, 380);
+  ctx.fillText('0, you lose.              ', 360, 390);
+}
