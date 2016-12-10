@@ -1,6 +1,7 @@
 const ctx = get2dContext();
 
-const billySpeed = 64; // pixels per second
+const billySpeed = 128; // pixels per second
+const roombaSpeed = 128; // pixels per second
 
 class Player {
   constructor(x, y, dirX, dirY, moving) {
@@ -41,10 +42,48 @@ class Player {
   }
 }
 
+class Roomba {
+  constructor(x, y, dirX, dirY, moving) {
+    this.x = x;
+    this.y = y;
+    this.dirX = dirX;
+    this.dirY = dirY;
+    this.moving = moving;
+  }
+  updateDirection() {
+    const viewX = this.x + Math.sign(this.dirX) * 32;
+    const viewY = this.y + Math.sign(this.dirY) * 32;
+    let newDirX = this.dirX;
+    let newDirY = this.dirY;
+    if (viewX < 0 || (viewX + 32) > 640) {
+      newDirX = Math.random() * (-1 * Math.sign(this.dirX));
+    }
+    if (viewY < 0 || (viewY + 32) > 480) {
+      newDirY = Math.random() * (-1 * Math.sign(this.dirY));
+    }
+    return new Roomba(this.x, this.y, newDirX, newDirY, true)
+  }
+  getRot() {
+    const vecSize = Math.sqrt(this.dirX * this.dirX + this.dirY * this.dirY);
+    const sign = Math.sign(this.dirX) == 0 ? 1 : Math.sign(this.dirX);
+    if (vecSize == 0) return 0;//undefined;
+    else return Math.acos(-1 * this.dirY / vecSize) * sign;
+  }
+  move(delta) {
+    const vecSize = Math.sqrt(this.dirX * this.dirX + this.dirY * this.dirY);
+    if (vecSize == 0 || this.moving == false) return this;
+    else {
+      const deltaX = this.dirX / vecSize * delta * roombaSpeed;
+      const deltaY = this.dirY / vecSize * delta * roombaSpeed;
+      return new Roomba(this.x + deltaX, this.y + deltaY, this.dirX, this.dirY, this.moving);
+    }
+  }
+}
+
 var frameStart = null;
 
-var rot = 0;
-var billy = new Player(128, 128, 0, 0);
+var billy = new Player(128, 128, 0, 0, false);
+var roomba = new Roomba(64, 64, -1, -1, true);
 
 function main(gameState) {
   return function(timestamp) {
@@ -53,8 +92,8 @@ function main(gameState) {
     const delta = (timestamp - frameStart) / 1000.0;
     frameStart = timestamp;
     renderRoom(ctx);
-    rot += delta;
-    renderRoomba(ctx, 32, 32, rot);
+    roomba = roomba.updateDirection().move(delta);
+    renderRoomba(ctx, roomba.x, roomba.y, roomba.getRot());
     billy = billy.updateDirection().move(delta);
     renderBilly(ctx, billy.x, billy.y, billy.getRot());
     requestAnimationFrame(main(gameState));
