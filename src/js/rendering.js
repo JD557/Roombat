@@ -34,6 +34,10 @@ function renderMarble(ctx, x, y) {
   ctx.drawImage(marbleImg, x, y);
 }
 
+function renderSnack(ctx, x, y, sprite) {
+  ctx.drawImage(snackImgs[sprite], x, y);
+}
+
 function renderScore(ctx, dirtyness) {
   ctx.fillStyle = 'white';
   ctx.font = '8px PressStart2P';
