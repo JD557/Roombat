@@ -80,10 +80,24 @@ class Roomba {
   }
 }
 
+class GameState {
+  constructor(billy, roombas) {
+    this.billy = billy;
+    this.roombas = roombas;
+  }
+  nextTick(delta) {
+    const newBilly = this.billy.updateDirection().move(delta);
+    const newRoombas = this.roombas.map(r => r.updateDirection().move(delta));
+    return new GameState(newBilly, newRoombas);
+  }
+}
+
 var frameStart = null;
 
-var billy = new Player(128, 128, 0, 0, false);
-var roomba = new Roomba(64, 64, -1, -1, true);
+const initialState = new GameState(
+  new Player(128, 128, 0, 0, false),
+  [new Roomba(64, 64, -1, -1, true), new Roomba(256, 256, 1, 0.5, true)]
+);
 
 function main(gameState) {
   return function(timestamp) {
@@ -92,12 +106,10 @@ function main(gameState) {
     const delta = (timestamp - frameStart) / 1000.0;
     frameStart = timestamp;
     renderRoom(ctx);
-    roomba = roomba.updateDirection().move(delta);
-    renderRoomba(ctx, roomba.x, roomba.y, roomba.getRot());
-    billy = billy.updateDirection().move(delta);
-    renderBilly(ctx, billy.x, billy.y, billy.getRot());
-    requestAnimationFrame(main(gameState));
+    gameState.roombas.forEach(r => renderRoomba(ctx, r.x, r.y, r.getRot()));
+    renderBilly(ctx, gameState.billy.x, gameState.billy.y, gameState.billy.getRot());
+    requestAnimationFrame(main(gameState.nextTick(delta)));
   };
 };
 
-main(0)();
+main(initialState)();
