@@ -3,6 +3,7 @@ const ctx = get2dContext();
 const billySpeed = 128; // pixels per second
 const roombaSpeed = 128; // pixels per second
 const marbleSpeed = 256; // pixels per second
+const snackRecharge = 25;
 const invalidGrids = [
   [16, 9], [17, 9], [18, 9], [16, 10], [17, 10], [18, 10] // bed
 ];
@@ -177,8 +178,18 @@ class GameState {
             r.x < m.x+4 && r.x+32 > m.x+4 && r.y < m.y+4 && r.y+32 > m.y+4);
         return !collidedWithMarble;
       });
-      const newDirtyness = this.dirtyness - (filteredRoombas.length * delta);
-      return new GameState(newBilly, filteredRoombas, filteredMarbles, this.snacks, newDirtyness);
+      const filteredSnacks = this.snacks.filter(function(s) {
+        const snackGrid = inGrid(s.x+16, s.y+16);
+        const billyGrid = inGrid(newBilly.x+16, newBilly.y+16);
+        const collidedWithBilly = snackGrid[0] == billyGrid[0] && snackGrid[1] == billyGrid[1];
+        return !collidedWithBilly;
+      });
+      const newDirtyness = Math.min(100,
+          this.dirtyness -
+          (filteredRoombas.length * delta) +
+          ((this.snacks.length - filteredSnacks.length) * snackRecharge)
+        );
+      return new GameState(newBilly, filteredRoombas, filteredMarbles, filteredSnacks, newDirtyness);
     }
   }
 }
