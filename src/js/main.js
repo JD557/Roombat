@@ -149,11 +149,19 @@ class GameState {
       marbleTimeout -= delta;
       const filteredMarbles = newMarbles.filter(function(m) {
         const outOfBounds = m.x < 32 || m.x + 8 > 640 - 32 || m.y < 64 + 32 || m.y + 8 > 480 - 32;
+        const centerX = m.x + 4;
+        const centerY = m.y + 4;
+        const collidedWithRoomba = newRoombas.some(r => r.x < centerX && r.x+32 > centerX && r.y < centerY && r.y+32 > centerY);
         const grid = inGrid(m.x + 4, m.y + 4);
         const collidedWithEnv = invalidGrids.some(g => g[0] == grid[0] && g[1] == grid[1]);
-        return !outOfBounds && !collidedWithEnv;
+        return !outOfBounds && !collidedWithEnv && !collidedWithRoomba;
       });
-      return new GameState(newBilly, newRoombas, filteredMarbles);
+      const filteredRoombas = newRoombas.filter(function(r) {
+        const collidedWithMarble = newMarbles.some(m =>
+            r.x < m.x+4 && r.x+32 > m.x+4 && r.y < m.y+4 && r.y+32 > m.y+4);
+        return !collidedWithMarble;
+      });
+      return new GameState(newBilly, filteredRoombas, filteredMarbles);
     }
   }
 }
