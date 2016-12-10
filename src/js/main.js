@@ -2,6 +2,7 @@ const ctx = get2dContext();
 
 const billySpeed = 128; // pixels per second
 const roombaSpeed = 128; // pixels per second
+const marbleSpeed = 256; // pixels per second
 const invalidGrids = [
   [16, 9], [17, 9], [18, 9], [16, 10], [17, 10], [18, 10] // bed
 ];
@@ -63,6 +64,25 @@ class Player {
   }
 }
 
+
+class Marble {
+  constructor(x, y, dirX, dirY) {
+    this.x = x;
+    this.y = y;
+    this.dirX = dirX;
+    this.dirY = dirY;
+  }
+  move(delta) {
+    const vecSize = Math.sqrt(this.dirX * this.dirX + this.dirY * this.dirY);
+    if (vecSize == 0) return this;
+    else {
+      const deltaX = this.dirX / vecSize * delta * marbleSpeed;
+      const deltaY = this.dirY / vecSize * delta * marbleSpeed;
+      return new Marble(this.x + deltaX, this.y + deltaY, this.dirX, this.dirY);
+    }
+  }
+}
+
 class Roomba {
   constructor(x, y, dirX, dirY, moving) {
     this.x = x;
@@ -102,14 +122,22 @@ class Roomba {
 }
 
 class GameState {
-  constructor(billy, roombas) {
+  constructor(billy, roombas, marbles) {
     this.billy = billy;
     this.roombas = roombas;
+    this.marbles = marbles;
   }
   nextTick(delta) {
     const newBilly = this.billy.updateDirection().move(delta);
     const newRoombas = this.roombas.map(r => r.updateDirection().move(delta));
-    return new GameState(newBilly, newRoombas);
+    var newMarbles = this.marbles.map(m => m.move(delta));
+    if (shootMarble == true) {
+      shootMarble = false;
+      marbleTimeout = 2;
+      newMarbles.push(new Marble(this.billy.x, this.billy.y, this.billy.dirX, this.billy.dirY));
+    }
+    marbleTimeout -= delta;
+    return new GameState(newBilly, newRoombas, newMarbles);
   }
 }
 
@@ -117,7 +145,8 @@ var frameStart = null;
 
 const initialState = new GameState(
   new Player(128, 128, 0, 0, false),
-  [new Roomba(16, 256, 1, 0.5, true), new Roomba(16, 256, 1, -0.5, true)]
+  [new Roomba(16, 256, 1, 0.5, true), new Roomba(16, 256, 1, -0.5, true)],
+  []
 );
 
 function main(gameState) {
@@ -129,6 +158,7 @@ function main(gameState) {
     renderRoomBackground(ctx);
     gameState.roombas.forEach(r => renderRoomba(ctx, r.x, r.y, r.getRot()));
     renderRoomForeground(ctx);
+    gameState.marbles.forEach(m => renderMarble(ctx, m.x, m.y));
     renderBilly(ctx, gameState.billy.x, gameState.billy.y, gameState.billy.getRot());
     requestAnimationFrame(main(gameState.nextTick(delta)));
   };

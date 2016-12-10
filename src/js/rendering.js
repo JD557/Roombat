@@ -26,6 +26,10 @@ function renderRoomba(ctx, x, y, rot) {
   drawRotated(ctx, x, y, rot, roombaImg);
 }
 
-function renderBilly(ctx, x, y, rot, frame, state) {
+function renderBilly(ctx, x, y, rot) {
   drawRotated(ctx, x, y, rot, billyImg);
+}
+
+function renderMarble(ctx, x, y) {
+  ctx.drawImage(marbleImg, x, y);
 }
