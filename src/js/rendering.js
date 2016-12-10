@@ -5,7 +5,19 @@ function get2dContext() {
   return ctx;
 }
 
+function drawRotated(ctx, x, y, rot, image) {
+  ctx.save();
+  ctx.translate(x + image.width / 2, y + image.height / 2);
+  ctx.rotate(rot);
+  ctx.drawImage(image, -image.width / 2, -image.height / 2)
+  ctx.restore();
+}
+
 function renderRoom(ctx) {
   ctx.clearRect(0, 0, 640, 480);
   ctx.drawImage(roomImg, 0, 0);
+}
+
+function renderRoomba(ctx, x, y, rot) {
+  drawRotated(ctx, 32, 32, rot, roombaImg);
 }
