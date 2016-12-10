@@ -58,7 +58,7 @@ class Roomba {
     if (viewX < 0 || (viewX + 32) > 640) {
       newDirX = Math.random() * (-1 * Math.sign(this.dirX));
     }
-    if (viewY < 0 || (viewY + 32) > 480) {
+    if (viewY < 64 || (viewY + 32) > 480) {
       newDirY = Math.random() * (-1 * Math.sign(this.dirY));
     }
     return new Roomba(this.x, this.y, newDirX, newDirY, true)
@@ -96,7 +96,7 @@ var frameStart = null;
 
 const initialState = new GameState(
   new Player(128, 128, 0, 0, false),
-  [new Roomba(64, 64, -1, -1, true), new Roomba(256, 256, 1, 0.5, true)]
+  [new Roomba(16, 256, 1, 0.5, true), new Roomba(16, 256, 1, -0.5, true)]
 );
 
 function main(gameState) {
