@@ -1,14 +1,17 @@
 function loadImage(path) {
-  var img = new Image();
+  let img = new Image();
   img.src = path;
   return img;
 }
 
-var roomImg = loadImage('res/room.png');
-var roombaImg = loadImage('res/roomba.png');
-var billyImg = loadImage('res/billy.png');
-var bedImg = loadImage('res/bed.png');
-var deskImg = loadImage('res/desk.png');
-var marbleImg = loadImage('res/marble.png');
-var menuImg = loadImage('res/title.png');
-var snackImgs = [loadImage('res/snack1.png'), loadImage('res/snack2.png')];
+const roomImg = loadImage('res/room.png');
+const roombaImg = loadImage('res/roomba.png');
+const billyImg = loadImage('res/billy.png');
+const bedImg = loadImage('res/bed.png');
+const deskImg = loadImage('res/desk.png');
+const marbleImg = loadImage('res/marble.png');
+const menuImg = loadImage('res/title.png');
+const snackImgs = [loadImage('res/snack1.png'), loadImage('res/snack2.png')];
+
+let introSnd = new Audio('res/intro.mp3');
+introSnd.loop = true;

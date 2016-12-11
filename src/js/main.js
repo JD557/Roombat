@@ -264,9 +264,12 @@ function main(gameState, menu) {
     frameStart = timestamp;
     marbleTimeout -= delta;
     if (menu) {
+      introSnd.play();
       renderTitle(ctx);
       if (shootMarble == true) {
         shootMarble = false;
+        introSnd.pause();
+        introSnd.currentTime = 0;
         requestAnimationFrame(main(initialState, false));
       }
       else {
