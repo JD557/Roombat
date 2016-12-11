@@ -21,6 +21,8 @@ function renderRoomBackground(ctx) {
 function renderRoomForeground(ctx) {
   ctx.drawImage(bedImg, 512, 256);
   ctx.drawImage(deskImg, 96, 384);
+  ctx.drawImage(gametableImg, 160, 192);
+  ctx.drawImage(wardrobeImg, 544, 96);
 }
 
 function renderRoomba(ctx, x, y, rot) {

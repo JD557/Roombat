@@ -13,7 +13,9 @@ for (let x = 1; x <= 18; ++x) {
 }
 const invalidGrids = [
   [18, 8], [16, 9], [17, 9], [18, 9], [16, 10], [17, 10], [18, 10], // bed
-  [4, 12], [3, 13], [4, 13], [5, 13] // desk
+  [4, 12], [3, 13], [4, 13], [5, 13], // desk
+  [17, 3], [18, 3], [17, 4], [18, 4], // wardrobe
+  [5, 6], [6, 6], [7, 6], [5, 7], [6, 7], [7, 7] // gametable
 ];
 const validGrids = allGrids.filter(g1 => !invalidGrids.some(g2 => g1[0] == g2[0] && g1[1] == g2[1]));
 function inGrid(x, y) {
