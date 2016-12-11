@@ -81,3 +81,18 @@ function renderTitle(ctx) {
   ctx.fillText('If your dirtyness reaches ', 360, 380);
   ctx.fillText('0, you lose.              ', 360, 390);
 }
+
+function renderGameOver(ctx, remainingRoombas) {
+  ctx.fillStyle = 'red';
+  ctx.font = '16px PressStart2P';
+
+  ctx.drawImage(menuImg, 0, 0);
+  if (remainingRoombas == 0) {
+    ctx.fillText('Congratulations!', 320 - 130, 250);
+    ctx.fillText('You defeated all the Roombas!', 320 - 230, 300);
+  }
+  else {
+    ctx.fillText('GAME OVER!', 320 - 70, 250);
+    ctx.fillText('Remaining Roombas: ' + remainingRoombas, 320 - 150, 300);
+  }
+}

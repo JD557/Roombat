@@ -308,9 +308,12 @@ function main(gameState, menu) {
           console.log("Game Over")
           themeSnd.pause();
           themeSnd.currentTime = 0;
-          marbleTimeout = 1; // To avoid autostarting the game
-          shootMarble = false;
-          requestAnimationFrame(main(gameState.nextTick(delta), true));
+          renderGameOver(ctx, gameState.remainingRoombas + gameState.roombas.length);
+          setTimeout(function () {
+            marbleTimeout = 1; // To avoid autostarting the game
+            shootMarble = false;
+            requestAnimationFrame(main(gameState.nextTick(delta), true));
+          }, 5000);
         }
       }
     }
