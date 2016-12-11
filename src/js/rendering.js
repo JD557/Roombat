@@ -19,7 +19,7 @@ function renderRoomBackground(ctx) {
 }
 
 function renderRoomForeground(ctx) {
-  ctx.drawImage(bedImg, 512, 288);
+  ctx.drawImage(bedImg, 512, 256);
   ctx.drawImage(deskImg, 96, 384);
 }
 
