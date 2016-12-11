@@ -151,16 +151,16 @@ class GameDirector {
     this.phase = Math.floor(totalTicks / 7);
 
     function roombasForPhase(phase) {
-      if (phase < 3) return 1;
+      if (phase < 1) return 1;
       else if (phase < 7) return 3;
-      else if (phase < 15) return 5;
+      else if (phase < 17) return 5;
       else if (phase < 20) return 7;
       else return 10;
     }
 
 
     this.roombaTicks = roombaTicks < 0 ? 7 : roombaTicks;
-    this.snackTicks = snackTicks < 0 ? 15 : snackTicks;
+    this.snackTicks = snackTicks < 0 ? 13 : snackTicks;
     this.roombasToSpawn = roombaTicks < 0 ? roombasForPhase(this.phase) : 0;
     this.snacksToSpawn = snackTicks < 0 ? 1 : 0;
   }
@@ -264,7 +264,7 @@ const initialState = new GameState(
   [],
   100,
   100,
-  new GameDirector(1, 5, 0)
+  new GameDirector(1, 10, 0)
 );
 
 function main(gameState, menu) {
