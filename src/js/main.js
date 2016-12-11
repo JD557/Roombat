@@ -213,6 +213,7 @@ class GameState {
       if (shootMarble == true) {
         shootMarble = false;
         marbleTimeout = 0.25;
+        shootSnd.play();
         newMarbles.push(new Marble(this.billy.x + 16, this.billy.y + 16, this.billy.dirX, this.billy.dirY));
       }
       const filteredMarbles = newMarbles.filter(function(m) {
@@ -227,12 +228,14 @@ class GameState {
       const filteredRoombas = newRoombas.filter(function(r) {
         const collidedWithMarble = newMarbles.some(m =>
             r.x < m.x+4 && r.x+32 > m.x+4 && r.y < m.y+4 && r.y+32 > m.y+4);
+        if (collidedWithMarble) {deadRoombaSnd.play();}
         return !collidedWithMarble;
       });
       const filteredSnacks = this.snacks.filter(function(s) {
         const snackGrid = inGrid(s.x+16, s.y+16);
         const billyGrid = inGrid(newBilly.x+16, newBilly.y+16);
         const collidedWithBilly = snackGrid[0] == billyGrid[0] && snackGrid[1] == billyGrid[1];
+        if (collidedWithBilly) {snackSnd.play();}
         return !collidedWithBilly;
       });
       const newDirtyness = Math.min(100,

@@ -17,3 +17,9 @@ const snackImgs = [loadImage('res/snack1.png'), loadImage('res/snack2.png')];
 
 let introSnd = new Audio('res/intro.mp3');
 introSnd.loop = true;
+let snackSnd = new Audio('res/snack.ogg');
+snackSnd.loop = false;
+let deadRoombaSnd = new Audio('res/dead.ogg');
+deadRoombaSnd.loop = false;
+let shootSnd = new Audio('res/shoot.ogg');
+shootSnd.loop = false;
