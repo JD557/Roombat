@@ -1,8 +1,8 @@
 const ctx = get2dContext();
 
-const billySpeed = 128; // pixels per second
+const billySpeed = 192; // pixels per second
 const roombaSpeed = 128; // pixels per second
-const marbleSpeed = 256; // pixels per second
+const marbleSpeed = 384; // pixels per second
 const snackRecharge = 25;
 
 let allGrids = [];
@@ -159,8 +159,8 @@ class GameDirector {
     }
 
 
-    this.roombaTicks = roombaTicks < 0 ? 7 : roombaTicks;
-    this.snackTicks = snackTicks < 0 ? 13 : snackTicks;
+    this.roombaTicks = roombaTicks < 0 ? 6 : roombaTicks;
+    this.snackTicks = snackTicks < 0 ? 15 : snackTicks;
     this.roombasToSpawn = roombaTicks < 0 ? roombasForPhase(this.phase) : 0;
     this.snacksToSpawn = snackTicks < 0 ? 1 : 0;
   }
@@ -210,9 +210,8 @@ class GameState {
       const newBilly = this.billy.updateDirection().move(delta);
       const newRoombas = this.roombas.map(r => r.updateDirection().move(delta));
       let newMarbles = this.marbles.map(m => m.move(delta));
-      if (shootMarble == true) {
-        shootMarble = false;
-        marbleTimeout = 0.25;
+      if (shootMarble == true && marbleTimeout<0) {
+        marbleTimeout = 0.20;
         shootSnd.play();
         newMarbles.push(new Marble(this.billy.x + 16, this.billy.y + 16, this.billy.dirX, this.billy.dirY));
       }

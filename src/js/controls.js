@@ -28,6 +28,9 @@ function baseKeyHandler(e) {
       if (e.type == 'keydown' && marbleTimeout < 0) {
         shootMarble = true;
       }
+      else if (e.type == 'keyup') {
+        shootMarble = false;
+      }
     }
 }
 
