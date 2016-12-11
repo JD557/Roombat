@@ -148,11 +148,13 @@ class GameDirector {
     this.phase = Math.floor(totalTicks / 7);
 
     function roombasForPhase(phase) {
-      if (phase < 2) return 1;
-      else if (phase < 5) return 3;
-      else if (phase < 10) return 5;
+      if (phase < 3) return 1;
+      else if (phase < 7) return 3;
+      else if (phase < 15) return 5;
+      else if (phase < 20) return 7;
       else return 10;
     }
+
 
     this.roombaTicks = roombaTicks < 0 ? 7 : roombaTicks;
     this.snackTicks = snackTicks < 0 ? 15 : snackTicks;
@@ -208,7 +210,7 @@ class GameState {
       if (shootMarble == true) {
         shootMarble = false;
         marbleTimeout = 0.25;
-        newMarbles.push(new Marble(this.billy.x, this.billy.y, this.billy.dirX, this.billy.dirY));
+        newMarbles.push(new Marble(this.billy.x + 16, this.billy.y + 16, this.billy.dirX, this.billy.dirY));
       }
       const filteredMarbles = newMarbles.filter(function(m) {
         const outOfBounds = m.x < 32 || m.x + 8 > 640 - 32 || m.y < 64 + 32 || m.y + 8 > 480 - 32;
@@ -250,7 +252,7 @@ const initialState = new GameState(
   [],
   100,
   100,
-  new GameDirector(-1, 2, 0)
+  new GameDirector(1, 5, 0)
 );
 
 function main(gameState, menu) {
