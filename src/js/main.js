@@ -228,14 +228,20 @@ class GameState {
       const filteredRoombas = newRoombas.filter(function(r) {
         const collidedWithMarble = newMarbles.some(m =>
             r.x < m.x+4 && r.x+32 > m.x+4 && r.y < m.y+4 && r.y+32 > m.y+4);
-        if (collidedWithMarble) {deadRoombaSnd.play();}
+        if (collidedWithMarble) {
+          deadRoombaSnd.currentTime = 0;
+          deadRoombaSnd.play();
+        }
         return !collidedWithMarble;
       });
       const filteredSnacks = this.snacks.filter(function(s) {
         const snackGrid = inGrid(s.x+16, s.y+16);
         const billyGrid = inGrid(newBilly.x+16, newBilly.y+16);
         const collidedWithBilly = snackGrid[0] == billyGrid[0] && snackGrid[1] == billyGrid[1];
-        if (collidedWithBilly) {snackSnd.play();}
+        if (collidedWithBilly) {
+          snackSnd.currentTime = 0;
+          snackSnd.play();
+        }
         return !collidedWithBilly;
       });
       const newDirtyness = Math.min(100,
@@ -282,6 +288,7 @@ function main(gameState, menu) {
       }
     }
     else {
+      themeSnd.play();
       if (delta > 0.5) {
         console.log("Warning: Game is too slow, ignoring state change");
         requestAnimationFrame(main(gameState, menu));
@@ -299,6 +306,8 @@ function main(gameState, menu) {
         }
         else {
           console.log("Game Over")
+          themeSnd.pause();
+          themeSnd.currentTime = 0;
           marbleTimeout = 1; // To avoid autostarting the game
           shootMarble = false;
           requestAnimationFrame(main(gameState.nextTick(delta), true));
