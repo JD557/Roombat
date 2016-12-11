@@ -43,11 +43,11 @@ function renderSnack(ctx, x, y, sprite, anim) {
   ctx.drawImage(snackImgs[sprite], x, y + wave);
 }
 
-function renderScore(ctx, dirtyness, remainingRoombas) {
+function renderScore(ctx, dirtiness, remainingRoombas) {
   ctx.fillStyle = 'white';
   ctx.font = '16px PressStart2P';
 
-  ctx.fillText('Dirtyness: ' + Math.ceil(dirtyness), 32, 32);
+  ctx.fillText('Dirtiness: ' + Math.ceil(dirtiness), 32, 32);
   ctx.fillText('Roombas: ' + remainingRoombas, 420, 32);
 }
 
@@ -78,7 +78,7 @@ function renderTitle(ctx) {
   ctx.fillText('Z: Shoot marble           ', 360, 330);
   ctx.fillText('Eat snacks to keep your   ', 360, 350);
   ctx.fillText('room dirty.               ', 360, 360);
-  ctx.fillText('If your dirtyness reaches ', 360, 380);
+  ctx.fillText('If your dirtiness reaches ', 360, 380);
   ctx.fillText('0, you lose.              ', 360, 390);
 }
 

@@ -170,12 +170,12 @@ class GameDirector {
 }
 
 class GameState {
-  constructor(billy, roombas, marbles, snacks, dirtyness, remainingRoombas, director) {
+  constructor(billy, roombas, marbles, snacks, dirtiness, remainingRoombas, director) {
     this.billy = billy;
     this.roombas = roombas;
     this.marbles = marbles;
     this.snacks = snacks;
-    this.dirtyness = dirtyness;
+    this.dirtiness = dirtiness;
     this.remainingRoombas = remainingRoombas;
     this.director = director;
   }
@@ -188,7 +188,7 @@ class GameState {
     const toSpawn = Math.min(n, this.remainingRoombas);
     const newRoombas = this.roombas.concat(Array(toSpawn).fill(0).map(_ => randomRoomba()));
     const newDirector = this.director.update(0);
-    return new GameState(this.billy, newRoombas, this.marbles, this.snacks, this.dirtyness, this.remainingRoombas - toSpawn, newDirector);
+    return new GameState(this.billy, newRoombas, this.marbles, this.snacks, this.dirtiness, this.remainingRoombas - toSpawn, newDirector);
   }
   spawnSnacks(n) {
     function randomSnack() {
@@ -197,7 +197,7 @@ class GameState {
     }
     const newSnacks = this.snacks.concat(Array(n).fill(0).map(_ => randomSnack()));
     const newDirector = this.director.update(0);
-    return new GameState(this.billy, this.roombas, this.marbles, newSnacks, this.dirtyness, this.remainingRoombas, newDirector);
+    return new GameState(this.billy, this.roombas, this.marbles, newSnacks, this.dirtiness, this.remainingRoombas, newDirector);
   }
   nextTick(delta) {
     if (this.director.roombasToSpawn > 0) {
@@ -243,13 +243,13 @@ class GameState {
         }
         return !collidedWithBilly;
       });
-      const newDirtyness = Math.min(100,
-          this.dirtyness -
+      const newDirtiness = Math.min(100,
+          this.dirtiness -
           (filteredRoombas.length * delta) +
           ((this.snacks.length - filteredSnacks.length) * snackRecharge)
         );
       const newDirector = this.director.update(delta);
-      return new GameState(newBilly, filteredRoombas, filteredMarbles, filteredSnacks, newDirtyness, this.remainingRoombas, newDirector);
+      return new GameState(newBilly, filteredRoombas, filteredMarbles, filteredSnacks, newDirtiness, this.remainingRoombas, newDirector);
     }
   }
 }
@@ -299,8 +299,8 @@ function main(gameState, menu) {
         gameState.snacks.forEach(s => renderSnack(ctx, s.x, s.y, s.sprite, frameStart));
         gameState.marbles.forEach(m => renderMarble(ctx, m.x, m.y));
         renderBilly(ctx, gameState.billy.x, gameState.billy.y, gameState.billy.getRot(), gameState.billy.moving, frameStart);
-        renderScore(ctx, gameState.dirtyness, gameState.remainingRoombas + gameState.roombas.length);
-        if (gameState.dirtyness > 0 && gameState.remainingRoombas + gameState.roombas.length > 0) {
+        renderScore(ctx, gameState.dirtiness, gameState.remainingRoombas + gameState.roombas.length);
+        if (gameState.dirtiness > 0 && gameState.remainingRoombas + gameState.roombas.length > 0) {
           requestAnimationFrame(main(gameState.nextTick(delta), false));
         }
         else {

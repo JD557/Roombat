@@ -19,9 +19,9 @@ How To Play
 - Arrow keys: Move Billy
 - Z: Shoot marble
 
-Eat snacks to keep your room dirty (+25 dirtyness).
+Eat snacks to keep your room dirty (+25 dirtiness).
 
-If your dirtyness reaches 0, you lose.
+If your dirtiness reaches 0, you lose.
 
 Tools
 -----
