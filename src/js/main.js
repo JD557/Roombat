@@ -143,14 +143,24 @@ class Roomba {
 }
 
 class GameDirector {
-  constructor(roombaTicks, snackTicks) {
-    this.roombaTicks = roombaTicks < 0 ? 10 : roombaTicks;
-    this.snackTicks = snackTicks < 0 ? 20 : snackTicks;
-    this.roombasToSpawn = roombaTicks < 0 ? 3 : 0;
+  constructor(roombaTicks, snackTicks, totalTicks) {
+    this.totalTicks = totalTicks;
+    this.phase = Math.floor(totalTicks / 7);
+
+    function roombasForPhase(phase) {
+      if (phase < 2) return 1;
+      else if (phase < 5) return 3;
+      else if (phase < 10) return 5;
+      else return 10;
+    }
+
+    this.roombaTicks = roombaTicks < 0 ? 7 : roombaTicks;
+    this.snackTicks = snackTicks < 0 ? 15 : snackTicks;
+    this.roombasToSpawn = roombaTicks < 0 ? roombasForPhase(this.phase) : 0;
     this.snacksToSpawn = snackTicks < 0 ? 1 : 0;
   }
   update(delta) {
-    return new GameDirector(this.roombaTicks - delta, this.snackTicks - delta);
+    return new GameDirector(this.roombaTicks - delta, this.snackTicks - delta, this.totalTicks + delta);
   }
 }
 
@@ -172,7 +182,7 @@ class GameState {
     }
     const toSpawn = Math.min(n, this.remainingRoombas);
     const newRoombas = this.roombas.concat(Array(toSpawn).fill(0).map(_ => randomRoomba()));
-    const newDirector = new GameDirector(this.director.roombaTicks, this.director.snackTicks);
+    const newDirector = this.director.update(0);
     return new GameState(this.billy, newRoombas, this.marbles, this.snacks, this.dirtyness, this.remainingRoombas - toSpawn, newDirector);
   }
   spawnSnacks(n) {
@@ -181,7 +191,7 @@ class GameState {
       return new Snack(grid[0] * 32, grid[1] * 32, Math.floor(Math.random() * 2));
     }
     const newSnacks = this.snacks.concat(Array(n).fill(0).map(_ => randomSnack()));
-    const newDirector = new GameDirector(this.director.roombaTicks, this.director.snackTicks);
+    const newDirector = this.director.update(0);
     return new GameState(this.billy, this.roombas, this.marbles, newSnacks, this.dirtyness, this.remainingRoombas, newDirector);
   }
   nextTick(delta) {
@@ -239,8 +249,8 @@ const initialState = new GameState(
   [],
   [],
   100,
-  10,
-  new GameDirector(-1, 2)
+  100,
+  new GameDirector(-1, 2, 0)
 );
 
 function main(gameState, menu) {
