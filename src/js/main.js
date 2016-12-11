@@ -4,12 +4,21 @@ const billySpeed = 128; // pixels per second
 const roombaSpeed = 128; // pixels per second
 const marbleSpeed = 256; // pixels per second
 const snackRecharge = 25;
+
+let allGrids = [];
+for (let x = 1; x <= 18; ++x) {
+  for (let y = 3; y <= 13; ++y) {
+    allGrids.push([x, y]);
+  }
+}
 const invalidGrids = [
   [16, 9], [17, 9], [18, 9], [16, 10], [17, 10], [18, 10] // bed
 ];
+const validGrids = allGrids.filter(g1 => !invalidGrids.some(g2 => g1[0] == g2[0] && g1[1] == g2[1]));
 function inGrid(x, y) {
   return [Math.floor(x/32), Math.floor(y/32)];
 }
+
 function clamp(x, min, max) {
   return Math.min(Math.max(x, min), max);
 }
@@ -136,8 +145,9 @@ class Roomba {
 class GameDirector {
   constructor(roombaTicks, snackTicks) {
     this.roombaTicks = roombaTicks < 0 ? 10 : roombaTicks;
-    this.snackTicks = snackTicks < 0 ? 5 : snackTicks;
+    this.snackTicks = snackTicks < 0 ? 20 : snackTicks;
     this.roombasToSpawn = roombaTicks < 0 ? 3 : 0;
+    this.snacksToSpawn = snackTicks < 0 ? 1 : 0;
   }
   update(delta) {
     return new GameDirector(this.roombaTicks - delta, this.snackTicks - delta);
@@ -165,9 +175,21 @@ class GameState {
     const newDirector = new GameDirector(this.director.roombaTicks, this.director.snackTicks);
     return new GameState(this.billy, newRoombas, this.marbles, this.snacks, this.dirtyness, this.remainingRoombas - toSpawn, newDirector);
   }
+  spawnSnacks(n) {
+    function randomSnack() {
+      const grid = validGrids[Math.floor(Math.random() * validGrids.length)];
+      return new Snack(grid[0] * 32, grid[1] * 32, Math.floor(Math.random() * 2));
+    }
+    const newSnacks = this.snacks.concat(Array(n).fill(0).map(_ => randomSnack()));
+    const newDirector = new GameDirector(this.director.roombaTicks, this.director.snackTicks);
+    return new GameState(this.billy, this.roombas, this.marbles, newSnacks, this.dirtyness, this.remainingRoombas, newDirector);
+  }
   nextTick(delta) {
     if (this.director.roombasToSpawn > 0) {
       return (this.spawnRoombas(this.director.roombasToSpawn).nextTick(delta));
+    }
+    else if (this.director.snacksToSpawn > 0) {
+      return (this.spawnSnacks(this.director.snacksToSpawn).nextTick(delta));
     }
     else {
       const newBilly = this.billy.updateDirection().move(delta);
@@ -216,10 +238,10 @@ const initialState = new GameState(
   new Player(128, 128, 0, 1, false),
   [],
   [],
-  [new Snack(256, 256)],
+  [],
   100,
   10,
-  new GameDirector(-1, -1)
+  new GameDirector(-1, 2)
 );
 
 function main(gameState, menu) {
