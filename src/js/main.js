@@ -145,12 +145,13 @@ class GameDirector {
 }
 
 class GameState {
-  constructor(billy, roombas, marbles, snacks, dirtyness, director) {
+  constructor(billy, roombas, marbles, snacks, dirtyness, remainingRoombas, director) {
     this.billy = billy;
     this.roombas = roombas;
     this.marbles = marbles;
     this.snacks = snacks;
     this.dirtyness = dirtyness;
+    this.remainingRoombas = remainingRoombas;
     this.director = director;
   }
   spawnRoombas(n) {
@@ -159,9 +160,10 @@ class GameState {
       if (door == 0) {return new Roomba(16, 256, 1, Math.random() - 0.5, true);}
       else {return new Roomba(288, 64 + 16, Math.random() - 0.5, 1, true);}
     }
-    const newRoombas = this.roombas.concat(Array(n).fill(0).map(_ => randomRoomba()));
+    const toSpawn = Math.min(n, this.remainingRoombas);
+    const newRoombas = this.roombas.concat(Array(toSpawn).fill(0).map(_ => randomRoomba()));
     const newDirector = new GameDirector(this.director.roombaTicks, this.director.snackTicks);
-    return new GameState(this.billy, newRoombas, this.marbles, this.snacks, this.dirtyness, newDirector);
+    return new GameState(this.billy, newRoombas, this.marbles, this.snacks, this.dirtyness, this.remainingRoombas - toSpawn, newDirector);
   }
   nextTick(delta) {
     if (this.director.roombasToSpawn > 0) {
@@ -203,7 +205,7 @@ class GameState {
           ((this.snacks.length - filteredSnacks.length) * snackRecharge)
         );
       const newDirector = this.director.update(delta);
-      return new GameState(newBilly, filteredRoombas, filteredMarbles, filteredSnacks, newDirtyness, newDirector);
+      return new GameState(newBilly, filteredRoombas, filteredMarbles, filteredSnacks, newDirtyness, this.remainingRoombas, newDirector);
     }
   }
 }
@@ -216,6 +218,7 @@ const initialState = new GameState(
   [],
   [new Snack(256, 256)],
   100,
+  10,
   new GameDirector(-1, -1)
 );
 
@@ -248,8 +251,8 @@ function main(gameState, menu) {
         gameState.snacks.forEach(s => renderSnack(ctx, s.x, s.y, s.sprite, frameStart));
         gameState.marbles.forEach(m => renderMarble(ctx, m.x, m.y));
         renderBilly(ctx, gameState.billy.x, gameState.billy.y, gameState.billy.getRot(), gameState.billy.moving, frameStart);
-        renderScore(ctx, gameState.dirtyness);
-        if (gameState.dirtyness > 0) {
+        renderScore(ctx, gameState.dirtyness, gameState.remainingRoombas + gameState.roombas.length);
+        if (gameState.dirtyness > 0 && gameState.remainingRoombas + gameState.roombas.length > 0) {
           requestAnimationFrame(main(gameState.nextTick(delta), false));
         }
         else {

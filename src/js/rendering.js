@@ -40,11 +40,12 @@ function renderSnack(ctx, x, y, sprite, anim) {
   ctx.drawImage(snackImgs[sprite], x, y + wave);
 }
 
-function renderScore(ctx, dirtyness) {
+function renderScore(ctx, dirtyness, remainingRoombas) {
   ctx.fillStyle = 'white';
   ctx.font = '8px PressStart2P';
 
   ctx.fillText('Dirtyness: ' + Math.ceil(dirtyness), 8, 16);
+  ctx.fillText('Roombas: ' + remainingRoombas, 8, 32);
 }
 
 
