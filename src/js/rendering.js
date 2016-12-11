@@ -20,6 +20,7 @@ function renderRoomBackground(ctx) {
 
 function renderRoomForeground(ctx) {
   ctx.drawImage(bedImg, 512, 288);
+  ctx.drawImage(deskImg, 96, 384);
 }
 
 function renderRoomba(ctx, x, y, rot) {
@@ -69,7 +70,6 @@ function renderTitle(ctx) {
   ctx.fillText('Do you have what it takes to   ', 64, 400);
   ctx.fillText('fight off the invaders and keep', 64, 410);
   ctx.fillText('your room dirty?               ', 64, 420);
-
 
   ctx.fillText('How to play:              ', 360, 300);
   ctx.fillText('Arrow keys: Move Billy    ', 360, 320);
