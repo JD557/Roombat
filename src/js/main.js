@@ -200,7 +200,6 @@ class GameState {
         marbleTimeout = 0.25;
         newMarbles.push(new Marble(this.billy.x, this.billy.y, this.billy.dirX, this.billy.dirY));
       }
-      marbleTimeout -= delta;
       const filteredMarbles = newMarbles.filter(function(m) {
         const outOfBounds = m.x < 32 || m.x + 8 > 640 - 32 || m.y < 64 + 32 || m.y + 8 > 480 - 32;
         const centerX = m.x + 4;
@@ -250,9 +249,9 @@ function main(gameState, menu) {
     if (!frameStart) frameStart = timestamp;
     const delta = (timestamp - frameStart) / 1000.0;
     frameStart = timestamp;
+    marbleTimeout -= delta;
     if (menu) {
       renderTitle(ctx);
-      marbleTimeout = -1;
       if (shootMarble == true) {
         shootMarble = false;
         requestAnimationFrame(main(initialState, false));
@@ -279,6 +278,8 @@ function main(gameState, menu) {
         }
         else {
           console.log("Game Over")
+          marbleTimeout = 1; // To avoid autostarting the game
+          shootMarble = false;
           requestAnimationFrame(main(gameState.nextTick(delta), true));
         }
       }
